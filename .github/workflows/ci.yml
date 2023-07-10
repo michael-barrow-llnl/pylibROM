@@ -6,10 +6,13 @@ on:
     branches:
       - main
 jobs:
+  docker-image:
+    uses: ./.github/workflows/docker.yml
   linux:
     runs-on: ubuntu-latest
+    needs: [docker-image]
     container:
-      image: dreamer2368/librom_env:latest
+      image: ghcr.io/michael-barrow-llnl/pylibROM/pylibROM_env:latest
       options: --user 1001 --privileged
       volumes:
         - /mnt:/mnt
@@ -21,7 +24,7 @@ jobs:
       - name: Check out pylibROM
         uses: actions/checkout@v1
         with:
-            submodules: 'true'
+          submodules: 'true'
       - name: build
         run: |
             cd extern/libROM
